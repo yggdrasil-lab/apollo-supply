@@ -29,7 +29,8 @@ This stack is optimized for **AirVPN** using **WireGuard**. Follow these steps t
 2.  **Extract Secrets**:
     Open the `.conf` file and find the following values:
     *   `[Interface] PrivateKey` -> `WIREGUARD_PRIVATE_KEY`
-    *   `[Interface] Address` (e.g., `10.x.x.x/32`) -> `WIREGUARD_ADDRESSES`
+    *   `[Interface] Address` (e.g., `10.128.0.2/32`) -> `WIREGUARD_ADDRESSES`
+        > **Important:** If your config includes both IPv4 and IPv6 addresses (e.g., `10.x.x.x/32,fd7d:x:x:x:x/128`), **only use the IPv4 address**. Including the IPv6 address will cause startup errors if the host network does not support IPv6.
     *   `[Peer] PresharedKey` -> `WIREGUARD_PRESHARED_KEY`
 
 3.  **Configure GitHub Secrets**:

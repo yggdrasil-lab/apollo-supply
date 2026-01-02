@@ -18,6 +18,7 @@ jobs:
           VPN_SERVICE_PROVIDER: ${{ secrets.VPN_SERVICE_PROVIDER }}
           VPN_USER: ${{ secrets.VPN_USER }}
           VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+          VPN_TYPE: ${{ secrets.VPN_TYPE }}
           WIREGUARD_PRIVATE_KEY: ${{ secrets.WIREGUARD_PRIVATE_KEY }}
           WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
           WIREGUARD_ADDRESSES: ${{ secrets.WIREGUARD_ADDRESSES }}

@@ -23,6 +23,7 @@ services:
       - WIREGUARD_PRESHARED_KEY
       - WIREGUARD_ADDRESSES
       - DNS_ADDRESS=1.1.1.1
+      - DNS_UPDATE_PERIOD=0
     networks:
       - aether-net
     labels:

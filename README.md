@@ -41,6 +41,16 @@ This stack is optimized for **AirVPN** using **WireGuard**. Follow these steps t
     *   `WIREGUARD_PRESHARED_KEY`: *(Your Preshared Key)*
     *   `WIREGUARD_ADDRESSES`: *(Your Address CIDR)*
 
+4.  **Configure Port Forwarding (AirVPN)**:
+    *   Log in to **AirVPN Client Area** -> **Ports**.
+    *   Click **Add a new port**.
+    *   Note the generated port number (e.g., `45678`).
+    *   Update `docker-compose.yml`:
+        *   Add `FIREWALL_VPN_INPUT_PORTS=45678` to the `gluetun` environment variables.
+    *   In **qBittorrent** (Web UI -> Options -> Connection):
+        *   Set **Port used for incoming connections** to this port.
+        *   Uncheck **Use UPnP / NAT-PMP**.
+
 ## Deployment
 
 The stack is deployed via GitHub Actions on a self-hosted runner (`muspelheim`).

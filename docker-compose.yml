@@ -8,7 +8,7 @@ services:
       - /dev/net/tun:/dev/net/tun
     ports:
       - "8080:8080" # qBittorrent UI
-      - "8081:8081" # SABnzbd UI
+      - "8085:8085" # SABnzbd UI
     volumes:
       - /opt/apollo-supply/gluetun:/gluetun
     environment:

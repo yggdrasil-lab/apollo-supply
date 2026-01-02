@@ -1,0 +1,69 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "8080:8080" # qBittorrent UI
+      - "8081:8081" # SABnzbd UI
+    volumes:
+      - /opt/apollo-supply/gluetun:/gluetun
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - VPN_SERVICE_PROVIDER
+      - VPN_USER
+      - VPN_PASSWORD
+      - VPN_TYPE
+      - WIREGUARD_PRIVATE_KEY
+      - WIREGUARD_PRESHARED_KEY
+      - WIREGUARD_ADDRESSES
+    networks:
+      - aether-net
+    labels:
+      - "com.docker.compose.project=apollo-supply"
+    restart: unless-stopped
+
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - WEBUI_PORT=8080
+    volumes:
+      - /opt/apollo-supply/qbittorrent:/config
+      - /mnt/storage/downloads:/downloads
+    labels:
+      - "com.docker.compose.project=apollo-supply"
+    restart: unless-stopped
+    depends_on:
+      - gluetun
+
+  sabnzbd:
+    image: linuxserver/sabnzbd
+    container_name: sabnzbd
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+    volumes:
+      - /opt/apollo-supply/sabnzbd:/config
+      - /mnt/storage/downloads:/downloads
+    labels:
+      - "com.docker.compose.project=apollo-supply"
+    restart: unless-stopped
+    depends_on:
+      - gluetun
+
+networks:
+  aether-net:
+    name: aether-net
+    external: true

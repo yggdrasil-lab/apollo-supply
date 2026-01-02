@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, muspelheim]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        env:
+          VPN_SERVICE_PROVIDER: ${{ secrets.VPN_SERVICE_PROVIDER }}
+          VPN_USER: ${{ secrets.VPN_USER }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+          WIREGUARD_PRIVATE_KEY: ${{ secrets.WIREGUARD_PRIVATE_KEY }}
+          WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
+          WIREGUARD_ADDRESSES: ${{ secrets.WIREGUARD_ADDRESSES }}
+        run: ./start.sh

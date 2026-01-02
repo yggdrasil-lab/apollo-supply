@@ -22,5 +22,4 @@ jobs:
           WIREGUARD_PRIVATE_KEY: ${{ secrets.WIREGUARD_PRIVATE_KEY }}
           WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
           WIREGUARD_ADDRESSES: ${{ secrets.WIREGUARD_ADDRESSES }}
-          HOST_WHITELIST_ENTRIES: ${{ secrets.HOST_WHITELIST_ENTRIES }}
         run: ./start.sh

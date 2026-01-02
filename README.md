@@ -40,7 +40,6 @@ This stack is optimized for **AirVPN** using **WireGuard**. Follow these steps t
     *   `WIREGUARD_PRIVATE_KEY`: *(Your Private Key)*
     *   `WIREGUARD_PRESHARED_KEY`: *(Your Preshared Key)*
     *   `WIREGUARD_ADDRESSES`: *(Your Address CIDR)*
-    *   `HOST_WHITELIST_ENTRIES`: `sabnzbd, gluetun, *` (or specific domains)
 
 ## Deployment
 
@@ -116,4 +115,13 @@ The following environment variables are passed to the container (handled via Git
 -   `VPN_PASSWORD`
 -   `WIREGUARD_PRIVATE_KEY` (if using WireGuard)
 -   `WIREGUARD_ADDRESSES` (if using WireGuard)
--   `HOST_WHITELIST_ENTRIES` (Optional, defaults to `*` if set in secrets)
+
+### Hostname Verification Fix (Required)
+
+SABnzbd may reject requests with "Access denied - Hostname verification failed" by default. Since environment variable configuration is unreliable for existing setups, correct this with the following command on your server after deployment:
+
+```bash
+docker exec sabnzbd sed -i 's/^host_whitelist = .*/host_whitelist = sabnzbd, gluetun, muspelheim, */' /config/sabnzbd.ini && docker restart sabnzbd
+```
+
+This updates the `sabnzbd.ini` file to allow all hostnames.

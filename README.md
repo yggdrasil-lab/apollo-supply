@@ -29,7 +29,7 @@ This stack is optimized for **AirVPN** using **WireGuard**. Follow these steps t
 2.  **Extract Secrets**:
     Open the `.conf` file and find the following values:
     *   `[Interface] PrivateKey` -> `WIREGUARD_PRIVATE_KEY`
-    *   `[Interface] Address` (e.g., `10.128.0.2/32`) -> `WIREGUARD_ADDRESSES`
+    *   `[Interface] Address` (e.g., `10.x.x.x/32`) -> `WIREGUARD_ADDRESSES`
         > **Important:** If your config includes both IPv4 and IPv6 addresses (e.g., `10.x.x.x/32,fd7d:x:x:x:x/128`), **only use the IPv4 address**. Including the IPv6 address will cause startup errors if the host network does not support IPv6.
     *   `[Peer] PresharedKey` -> `WIREGUARD_PRESHARED_KEY`
 
@@ -40,6 +40,7 @@ This stack is optimized for **AirVPN** using **WireGuard**. Follow these steps t
     *   `WIREGUARD_PRIVATE_KEY`: *(Your Private Key)*
     *   `WIREGUARD_PRESHARED_KEY`: *(Your Preshared Key)*
     *   `WIREGUARD_ADDRESSES`: *(Your Address CIDR)*
+    *   `HOST_WHITELIST_ENTRIES`: `sabnzbd, gluetun, *` (or specific domains)
 
 ## Deployment
 
@@ -105,3 +106,14 @@ SABnzbd usually starts without a password by default, but follows a setup wizard
     *   Go to **Tools** -> **Options** -> **Web UI**.
     *   Under **Authentication**, change the username and password to your preference.
     *   (Optional) Disable CSRF protection if you encounter API issues with Prowlarr.
+
+### Environment Variables
+
+The following environment variables are passed to the container (handled via GitHub Secrets):
+
+-   `VPN_SERVICE_PROVIDER`
+-   `VPN_USER`
+-   `VPN_PASSWORD`
+-   `WIREGUARD_PRIVATE_KEY` (if using WireGuard)
+-   `WIREGUARD_ADDRESSES` (if using WireGuard)
+-   `HOST_WHITELIST_ENTRIES` (Optional, defaults to `*` if set in secrets)

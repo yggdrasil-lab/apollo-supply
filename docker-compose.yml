@@ -53,7 +53,9 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - PGID=1000
       - TZ=Pacific/Auckland
+      - HOST_WHITELIST_ENTRIES=${HOST_WHITELIST_ENTRIES:-sabnzbd, gluetun, muspelheim, *}
     volumes:
       - /opt/apollo-supply/sabnzbd:/config
       - /mnt/storage/downloads:/downloads

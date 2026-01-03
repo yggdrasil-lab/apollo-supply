@@ -152,3 +152,17 @@ If torrents are stuck at "Downloading metadata" or 0%:
 1.  **Check Interface**: In qBittorrent settings (Advanced), ensure **Network Interface** is set to `tun0`.
 2.  **Port Forwarding**: Ensure you have forwarded a port in AirVPN and added it to `FIREWALL_VPN_INPUT_PORTS` (Gluetun) and qBittorrent's "Incoming Port" settings.
 3.  **DNS**: Ensure Gluetun is using a valid DNS (e.g., `DNS_ADDRESS=1.1.1.1`).
+
+## Plex Remote Access (Behind Traefik/Cloudflare)
+
+If your Plex server (in `apollo-core`) is behind Traefik and Cloudflare (tunneled), default remote access detection may fail. To enable it:
+
+1.  **Server Settings**:
+    *   Go to **Settings** -> **Network**.
+    *   **Custom server access URLs**: Add your external URL, e.g., `https://plex.your-domain.com:443`.
+    *   Ensure **Secure connections** is set to `Preferred`.
+
+2.  **Remote Access Tab**:
+    *   Go to **device server settings** -> **Remote Access**.
+    *   You may see an error ("Not available outside your network"), but if the Custom URL is set, clients will still connect successfully via the proxy.
+    *   **Disable Remote Access** toggle if you only want to route via Cloudflare (optional, but prevents direct port mapping attempts).

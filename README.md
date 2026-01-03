@@ -139,3 +139,16 @@ docker exec sabnzbd sed -i 's/^host_whitelist = .*/host_whitelist = sabnzbd, glu
 ```
 
 This updates the `sabnzbd.ini` file to allow all hostnames.
+
+## Troubleshooting
+
+### Gluetun: "Context deadline exceeded" / Connection Loop
+If Gluetun keeps restarting with `context deadline exceeded` or `i/o timeout` errors:
+1.  **Check MTU**: This usually means packet fragmentation. Ensure `WIREGUARD_MTU=1280` is set in `docker-compose.yml`.
+2.  **Disable Blocklists**: If the error persists specifically on blocklist updates, verify `BLOCK_MALICIOUS=off` is set.
+
+### qBittorrent: Metadata Stalled / 0% Download
+If torrents are stuck at "Downloading metadata" or 0%:
+1.  **Check Interface**: In qBittorrent settings (Advanced), ensure **Network Interface** is set to `tun0`.
+2.  **Port Forwarding**: Ensure you have forwarded a port in AirVPN and added it to `FIREWALL_VPN_INPUT_PORTS` (Gluetun) and qBittorrent's "Incoming Port" settings.
+3.  **DNS**: Ensure Gluetun is using a valid DNS (e.g., `DNS_ADDRESS=1.1.1.1`).

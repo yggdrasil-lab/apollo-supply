@@ -22,7 +22,7 @@ services:
       - WIREGUARD_PRIVATE_KEY
       - WIREGUARD_PRESHARED_KEY
       - WIREGUARD_ADDRESSES
-      - WIREGUARD_MTU=1280
+      - BLOCK_MALICIOUS=off
       - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS}
     networks:
       - aether-net

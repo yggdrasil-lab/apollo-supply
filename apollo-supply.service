@@ -1,11 +1,13 @@
 [Unit]
 Description=Apollo Supply Docker Compose Stack
-Requires=docker.service network-online.target
-After=docker.service network-online.target
+Wants=docker.service
+After=docker.service network.target
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+Restart=on-failure
+RestartSec=5s
 WorkingDirectory=/home/batmon/apollo-supply
 # Use standard docker compose commands. 
 # Ensure full path to docker is used (usually /usr/bin/docker)

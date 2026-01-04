@@ -47,7 +47,8 @@ services:
       - "com.docker.compose.project=apollo-supply"
     restart: unless-stopped
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
   sabnzbd:
     image: linuxserver/sabnzbd
@@ -64,7 +65,8 @@ services:
       - "com.docker.compose.project=apollo-supply"
     restart: unless-stopped
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
 networks:
   aether-net:

@@ -77,6 +77,20 @@ The following environment variables are passed to the container (handled via Git
 
 Ensure environment variables are set if running manually without the repository secrets.
 
+## Persistence (Systemd)
+
+To ensure the stack starts correctly after a reboot (handling the VPN dependency race condition), use the provided Systemd service. This avoids the "Exited (128)" error where applications crash because Gluetun isn't ready.
+
+**One-time Setup:**
+
+```bash
+sudo ln -sf /path-to/apollo-supply.service /etc/systemd/system/apollo-supply.service
+sudo systemctl daemon-reload
+sudo systemctl enable apollo-supply.service
+```
+
+This service uses `restore.sh` to safely start Gluetun, wait for health, and then start dependent services, preserving injected secrets.
+
 ## Connecting to Prowlarr / Arr Stack
 
 Since `qBittorrent` and `SABnzbd` are routed through the `gluetun` container, they share its IP address. When configuring download clients in Prowlarr, Sonarr, or Radarr (running in the `apollo-core` stack), use the following details:

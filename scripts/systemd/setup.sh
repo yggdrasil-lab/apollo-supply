@@ -21,6 +21,7 @@ fi
 # but for simplicity here we will generate the final file in /etc/systemd/system directly.
 
 echo "Generating service file at $TARGET_SERVICE_FILE..."
+rm -f "$TARGET_SERVICE_FILE"
 cp "$SOURCE_SERVICE_FILE" "$TARGET_SERVICE_FILE"
 
 # Replace placeholder with actual path

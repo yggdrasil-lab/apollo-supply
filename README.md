@@ -89,6 +89,13 @@ sudo ./scripts/systemd/setup.sh
 
 This script registers a systemd service that uses `scripts/systemd/restore.sh` to safely start Gluetun, wait for health, and then start dependent services, preserving injected secrets.
 
+**Verify Persistence:**
+To check if the startup script ran correctly after a reboot:
+
+```bash
+sudo journalctl -u apollo-supply.service -b --no-pager
+```
+
 ## Connecting to Prowlarr / Arr Stack
 
 Since `qBittorrent` and `SABnzbd` are routed through the `gluetun` container, they share its IP address. When configuring download clients in Prowlarr, Sonarr, or Radarr (running in the `apollo-core` stack), use the following details:

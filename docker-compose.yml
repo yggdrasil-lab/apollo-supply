@@ -56,11 +56,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - PGID=1000
       - TZ=Pacific/Auckland
     volumes:
       - /opt/apollo-supply/sabnzbd:/config
-      - /mnt/storage/downloads:/downloads
+      - /mnt/storage/downloads:/config/Downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
     restart: unless-stopped

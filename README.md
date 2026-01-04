@@ -84,12 +84,10 @@ To ensure the stack starts correctly after a reboot (handling the VPN dependency
 **One-time Setup:**
 
 ```bash
-sudo ln -sf /path-to/apollo-supply.service /etc/systemd/system/apollo-supply.service
-sudo systemctl daemon-reload
-sudo systemctl enable apollo-supply.service
+sudo ./scripts/systemd/setup.sh
 ```
 
-This service uses `restore.sh` to safely start Gluetun, wait for health, and then start dependent services, preserving injected secrets.
+This script registers a systemd service that uses `scripts/systemd/restore.sh` to safely start Gluetun, wait for health, and then start dependent services, preserving injected secrets.
 
 ## Connecting to Prowlarr / Arr Stack
 

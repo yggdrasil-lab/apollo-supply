@@ -116,9 +116,26 @@ SABnzbd usually starts without a password by default, but follows a setup wizard
 3.  **Security (Optional but Recommended)**:
     *   In **Config** -> **General** -> **Security**, you can set a username and password if desired.
 
-    *   Go to **Tools** -> **Options** -> **Web UI**.
-    *   Under **Authentication**, change the username and password to your preference.
-    *   (Optional) Disable CSRF protection if you encounter API issues with Prowlarr.
+4.  **Folder Configuration (Important)**:
+    To ensure Sonarr/Radarr can find your downloads, you must configure SABnzbd to use the standardized `/downloads` directory.
+
+    *   Go to **Config** -> **Folders**.
+    *   **Temporary Download Folder**: Set to `/downloads/incomplete`.
+    *   **Completed Download Folder**: Set to `/downloads/complete`.
+    *   Save Changes.
+
+5.  **Category Setup for Prowlarr (Required)**:
+    Prowlarr requires categories to be set up in SABnzbd to function correctly, even for test grabs.
+
+    *   **In SABnzbd**: Go to **Config** -> **Categories**.
+    *   Create the following categories (mapping them to your desired folders):
+        *   `movies` -> Folder/Path: `movies`
+        *   `tv` -> Folder/Path: `tv`
+        *   `audio` -> Folder/Path: `audio`
+        *   `prowlarr` -> Folder/Path: `prowlarr` (or leave blank for default)
+    *   **In Prowlarr**: Go to **Settings** -> **Download Clients** -> **SABnzbd**.
+    *   Set the **Category** field to `prowlarr`.
+    *   Test and Save.
 
 ### Environment Variables
 

@@ -8,10 +8,10 @@ Type=oneshot
 RemainAfterExit=yes
 Restart=on-failure
 RestartSec=5s
-WorkingDirectory=/home/batmon/apollo-supply
+WorkingDirectory=%INSTALL_DIR%
 # Use standard docker compose commands. 
 # Ensure full path to docker is used (usually /usr/bin/docker)
-ExecStart=/home/batmon/apollo-supply/restore.sh
+ExecStart=%INSTALL_DIR%/scripts/systemd/restore.sh
 ExecStop=/usr/bin/docker stop sabnzbd qbittorrent gluetun
 
 [Install]

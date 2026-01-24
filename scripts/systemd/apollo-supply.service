@@ -1,7 +1,7 @@
 [Unit]
 Description=Apollo Supply Docker Compose Stack
-Wants=docker.service
-After=docker.service network.target
+Wants=docker.service network-online.target
+After=docker.service network-online.target
 
 [Service]
 Type=oneshot

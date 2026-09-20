@@ -26,9 +26,10 @@ services:
       - WIREGUARD_ADDRESSES
       - BLOCK_MALICIOUS=off
       - WIREGUARD_MTU=1280
-      # Inbound ports permitted through the tunnel. Must include the port AirVPN
-      # forwards, plus 50300 for slskd's peer connections (see the slskd service).
-      - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS}
+      # Inbound ports permitted through the tunnel. The secret holds the
+      # qBittorrent port; slskd's listen port is appended here so the firewall
+      # rule and the port slskd actually listens on cannot drift apart.
+      - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS:?FIREWALL_VPN_INPUT_PORTS must be set},${SLSKD_LISTEN_PORT:?SLSKD_LISTEN_PORT must be set}
       # Control server, read by slskd to confirm the tunnel is up before it
       # connects to Soulseek. Bound to loopback so it stays unreachable from
       # other containers on aether-net; gluetun itself is on that network.
@@ -87,10 +88,13 @@ services:
     environment:
       - TZ=Pacific/Auckland
       - SLSKD_HTTP_PORT=5030
-      # Must match the port AirVPN forwards to the tunnel. gluetun cannot
-      # discover it automatically for a custom WireGuard provider, so it is
-      # reserved manually in the AirVPN client area rather than polled.
-      - SLSKD_SLSK_LISTEN_PORT=50300
+      # Must be a port AirVPN forwards to this account (any free port >= 2048,
+      # 5 per account, reserved in the client area). gluetun cannot discover it
+      # for a custom WireGuard provider, so it is set here rather than polled.
+      # slskd announces this port to the Soulseek network and has no separate
+      # public-port setting, so AirVPN's "Local" remap must stay empty: peers
+      # would otherwise dial a port AirVPN never forwards.
+      - SLSKD_SLSK_LISTEN_PORT=${SLSKD_LISTEN_PORT:?SLSKD_LISTEN_PORT must be set}
       - SLSKD_USERNAME=${SLSKD_USERNAME:?SLSKD_USERNAME must be set}
       - SLSKD_PASSWORD=${SLSKD_PASSWORD:?SLSKD_PASSWORD must be set}
       - SLSKD_SLSK_USERNAME=${SLSKD_SLSK_USERNAME:?SLSKD_SLSK_USERNAME must be set}

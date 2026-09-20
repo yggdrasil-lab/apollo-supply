@@ -115,12 +115,13 @@ services:
       - SLSKD_VPN_PORT_FORWARDING=false
     volumes:
       - /opt/apollo-supply/slskd:/app
-      # Repository-owned config, mounted over slskd's default config path. The
-      # copy at /opt/apollo-supply/slskd/slskd.yml is shadowed by this mount and
-      # no longer read; edit config/slskd.yml instead. Read-only to keep the
-      # repository authoritative — slskd writes this file only through the web
-      # UI's YAML editor, which is disabled unless remote_configuration is on.
-      - ./config/slskd.yml:/app/slskd.yml:ro
+      # slskd's config is not bind-mounted from the checkout. A mount sourced
+      # from this repository is resolved inside the runner's own filesystem,
+      # which the Docker daemon cannot see, so the daemon creates an empty
+      # directory at that path and the container fails to start ("not a
+      # directory: Are you trying to mount a directory onto a file"). start.sh
+      # installs config/slskd.yml into the directory below instead, which the
+      # container already reads as /app/slskd.yml.
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"

@@ -38,7 +38,7 @@ AirVPN forwards a given port number to **one account only** — it is opened on 
 
 ### slskd configuration
 
-slskd's configuration lives in `config/slskd.yml`, mounted over the image's default config path. Edit that file, not `/opt/apollo-supply/slskd/slskd.yml`, which the mount shadows and nothing reads. It exists because slskd only maps an environment variable to an option it explicitly attributes: an option without that attribute has no `SLSKD_*` equivalent and can only be set in the file. Where both exist, the YAML wins — configuration is layered defaults, then environment, then YAML, then command line, and the last layer wins.
+slskd's configuration lives in `config/slskd.yml`. `start.sh` installs it at `/opt/apollo-supply/slskd/slskd.yml` on every deploy, which the container reads as `/app/slskd.yml` through the mount it already has; edit the repository file, because the host copy is overwritten each deploy. It exists because slskd only maps an environment variable to an option it explicitly attributes: an option without that attribute has no `SLSKD_*` equivalent and can only be set in the file. Where both exist, the YAML wins — configuration is layered defaults, then environment, then YAML, then command line, and the last layer wins.
 
 Completed downloads keep the peer's folder structure, minus the peer's username: `transfers.download.destination.subdirectory` is `${SOURCE_PATH}`. The default, `${SOURCE_DIRECTORY}`, keeps only the file's immediate parent folder. Downloads started from Browse ignore this — the web UI sends its own destination for those. slskd does not classify content, so music, audiobooks and books are not separated automatically and are moved into the media libraries by hand.
 

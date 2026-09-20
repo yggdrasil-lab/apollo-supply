@@ -1,0 +1,42 @@
+# slskd configuration owned by this repository.
+#
+# docker-compose.yml mounts this over slskd's default config path
+# (/app/slskd.yml), so this file is the single source of truth. Deploys
+# re-checkout the repository, so edit this file and not the copy under
+# /opt/apollo-supply/slskd/, which the mount shadows and nothing reads.
+#
+# Why any of this is here rather than in the environment: slskd maps an
+# environment variable to an option only when the option is explicitly
+# attributed with [EnvironmentVariable], and transfers.download.destination.
+# subdirectory carries no such attribute, so it has no SLSKD_* equivalent.
+# The command line is attributed the same way, so it cannot be set there
+# either. It can only be set in this file.
+#
+# Note also which way precedence runs: configuration is layered
+# defaults -> environment -> YAML -> command line, and the last layer wins. A
+# value here therefore overrides an environment variable for the same option.
+# Leave an option out of this file to keep its default or its environment value.
+
+transfers:
+  download:
+    destination:
+      # Where a completed download is written, relative to SLSKD_DOWNLOADS_DIR
+      # (/downloads/slskd, i.e. /mnt/storage/downloads/slskd on the host).
+      # The value must stay relative and cannot traverse upwards.
+      #
+      # ${SOURCE_PATH} is the peer's folder path above the file, with the path
+      # root (the peer's @@-prefixed share root) removed. A peer sharing
+      # "Anime/Show OST/01.flac" therefore lands at
+      # "Anime/Show OST/01.flac" under the downloads directory, preserving the
+      # remote folder structure.
+      #
+      # The peer's username is deliberately excluded. The alternative,
+      # ${SOURCE_USERNAME}/${SOURCE_PATH}, would keep it.
+      #
+      # slskd's default is ${SOURCE_DIRECTORY}, the file's immediate parent
+      # folder only, which turns a download started from search results into
+      # "Show OST/01.flac" and drops everything above it.
+      #
+      # This does not apply to downloads started from Browse: the web UI sends a
+      # per-download destination for those, which takes precedence.
+      subdirectory: ${SOURCE_PATH}

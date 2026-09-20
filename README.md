@@ -9,6 +9,7 @@ VPN-routed download layer for the Apollo media stack. Companion to apollo-core â
 | Gluetun | `gluetun` | gateway | VPN client (AirVPN/WireGuard). All download traffic routes through it |
 | qBittorrent | `qbittorrent` | 8080 | Torrent client, routed through Gluetun |
 | SABnzbd | `sabnzbd` | 8085 | Usenet client, routed through Gluetun |
+| slskd | `slskd` | 5030 | Soulseek client, routed through Gluetun |
 
 ## Documentation
 

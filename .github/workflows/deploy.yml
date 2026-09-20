@@ -23,4 +23,9 @@ jobs:
           WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
           WIREGUARD_ADDRESSES: ${{ secrets.WIREGUARD_ADDRESSES }}
           FIREWALL_VPN_INPUT_PORTS: ${{ secrets.FIREWALL_VPN_INPUT_PORTS }}
+          GLUETUN_CONTROL_API_KEY: ${{ secrets.GLUETUN_CONTROL_API_KEY }}
+          SLSKD_USERNAME: ${{ secrets.SLSKD_USERNAME }}
+          SLSKD_PASSWORD: ${{ secrets.SLSKD_PASSWORD }}
+          SLSKD_SLSK_USERNAME: ${{ secrets.SLSKD_SLSK_USERNAME }}
+          SLSKD_SLSK_PASSWORD: ${{ secrets.SLSKD_SLSK_PASSWORD }}
         run: ./start.sh

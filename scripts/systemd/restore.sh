@@ -2,7 +2,7 @@
 
 # Define container names
 VPN_CONTAINER="gluetun"
-DEPENDENT_CONTAINERS=("qbittorrent" "sabnzbd")
+DEPENDENT_CONTAINERS=("slskd" "qbittorrent" "sabnzbd")
 
 echo "Starting Apollo Supply Resume..."
 

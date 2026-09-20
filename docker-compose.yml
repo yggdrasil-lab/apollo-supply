@@ -9,6 +9,7 @@ services:
     ports:
       - "8080:8080" # qBittorrent UI
       - "8085:8085" # SABnzbd UI
+      - "5030:5030" # slskd UI
     volumes:
       - /opt/apollo-supply/gluetun:/gluetun
     environment:
@@ -25,7 +26,14 @@ services:
       - WIREGUARD_ADDRESSES
       - BLOCK_MALICIOUS=off
       - WIREGUARD_MTU=1280
+      # Inbound ports permitted through the tunnel. Must include the port AirVPN
+      # forwards, plus 50300 for slskd's peer connections (see the slskd service).
       - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS}
+      # Control server, read by slskd to confirm the tunnel is up before it
+      # connects to Soulseek. Bound to loopback so it stays unreachable from
+      # other containers on aether-net; gluetun itself is on that network.
+      - HTTP_CONTROL_SERVER_ADDRESS=127.0.0.1:8000
+      - 'HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"apikey","apikey":"${GLUETUN_CONTROL_API_KEY:?GLUETUN_CONTROL_API_KEY must be set}"}'
     networks:
       - aether-net
     labels:
@@ -61,6 +69,48 @@ services:
       - TZ=Pacific/Auckland
     volumes:
       - /opt/apollo-supply/sabnzbd:/config
+      - /mnt/storage/downloads:/downloads
+    labels:
+      - "com.docker.compose.project=apollo-supply"
+    restart: unless-stopped
+    depends_on:
+      gluetun:
+        condition: service_healthy
+
+  slskd:
+    image: slskd/slskd:latest
+    container_name: slskd
+    network_mode: "service:gluetun"
+    # The image ships uid/gid 1000; declaring it here skips the entrypoint's
+    # recursive chown of /app.
+    user: "1000:1000"
+    environment:
+      - TZ=Pacific/Auckland
+      - SLSKD_HTTP_PORT=5030
+      # Must match the port AirVPN forwards to the tunnel. gluetun cannot
+      # discover it automatically for a custom WireGuard provider, so it is
+      # reserved manually in the AirVPN client area rather than polled.
+      - SLSKD_SLSK_LISTEN_PORT=50300
+      - SLSKD_USERNAME=${SLSKD_USERNAME:?SLSKD_USERNAME must be set}
+      - SLSKD_PASSWORD=${SLSKD_PASSWORD:?SLSKD_PASSWORD must be set}
+      - SLSKD_SLSK_USERNAME=${SLSKD_SLSK_USERNAME:?SLSKD_SLSK_USERNAME must be set}
+      - SLSKD_SLSK_PASSWORD=${SLSKD_SLSK_PASSWORD:?SLSKD_SLSK_PASSWORD must be set}
+      - SLSKD_DOWNLOADS_DIR=/downloads/slskd
+      - SLSKD_INCOMPLETE_DIR=/downloads/slskd/.incomplete
+      # Shares only what slskd itself downloads. Remove this line to share
+      # nothing, at the cost of being treated as a leecher by some users.
+      - SLSKD_SHARED_DIR=/downloads/slskd
+      # slskd polls gluetun's control server and treats an unreachable server
+      # or an empty public IP as the tunnel being down; it then refuses to
+      # connect to Soulseek, and disconnects if the tunnel drops.
+      - SLSKD_VPN=true
+      - SLSKD_VPN_GLUETUN_URL=http://localhost:8000
+      - SLSKD_VPN_GLUETUN_API_KEY=${GLUETUN_CONTROL_API_KEY:?GLUETUN_CONTROL_API_KEY must be set}
+      # Left off deliberately: the port is fixed rather than supplied by
+      # gluetun, so slskd must not wait for one it will never be given.
+      - SLSKD_VPN_PORT_FORWARDING=false
+    volumes:
+      - /opt/apollo-supply/slskd:/app
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"

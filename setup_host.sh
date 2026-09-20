@@ -18,7 +18,10 @@ DIRS=(
     "/opt/apollo-supply/gluetun"
     "/opt/apollo-supply/qbittorrent"
     "/opt/apollo-supply/sabnzbd"
+    "/opt/apollo-supply/slskd"
     "/mnt/storage/downloads"
+    "/mnt/storage/downloads/slskd"
+    "/mnt/storage/downloads/slskd/.incomplete"
 )
 
 for dir in "${DIRS[@]}"; do

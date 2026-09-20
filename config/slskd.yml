@@ -1,9 +1,9 @@
 # slskd configuration owned by this repository.
 #
-# docker-compose.yml mounts this over slskd's default config path
-# (/app/slskd.yml), so this file is the single source of truth. Deploys
-# re-checkout the repository, so edit this file and not the copy under
-# /opt/apollo-supply/slskd/, which the mount shadows and nothing reads.
+# start.sh copies this file to /opt/apollo-supply/slskd/slskd.yml on every
+# deploy, and docker-compose.yml mounts that directory at /app, so slskd reads
+# it as /app/slskd.yml. This file is the single source of truth: edit it, not
+# the copy under /opt/apollo-supply/slskd/, which each deploy overwrites.
 #
 # Why any of this is here rather than in the environment: slskd maps an
 # environment variable to an option only when the option is explicitly

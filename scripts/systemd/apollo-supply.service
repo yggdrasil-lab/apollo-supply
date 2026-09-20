@@ -12,7 +12,7 @@ WorkingDirectory=%INSTALL_DIR%
 # Use standard docker compose commands. 
 # Ensure full path to docker is used (usually /usr/bin/docker)
 ExecStart=%INSTALL_DIR%/scripts/systemd/restore.sh
-ExecStop=/usr/bin/docker stop sabnzbd qbittorrent gluetun
+ExecStop=/usr/bin/docker stop slskd sabnzbd qbittorrent gluetun
 
 [Install]
 WantedBy=multi-user.target

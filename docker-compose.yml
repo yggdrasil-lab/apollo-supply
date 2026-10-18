@@ -1,3 +1,9 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -36,9 +42,15 @@ services:
       - HTTP_CONTROL_SERVER_ADDRESS=127.0.0.1:8000
       - 'HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"apikey","apikey":"${GLUETUN_CONTROL_API_KEY:?GLUETUN_CONTROL_API_KEY must be set}"}'
     networks:
-      - aether-net
+      aether-net:
+        aliases:
+          - gluetun
+          - qbittorrent
+          - sabnzbd
+          - slskd
     labels:
       - "com.docker.compose.project=apollo-supply"
+    logging: *default-logging
     restart: unless-stopped
 
   qbittorrent:
@@ -55,6 +67,7 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    logging: *default-logging
     restart: unless-stopped
     depends_on:
       gluetun:
@@ -73,6 +86,7 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    logging: *default-logging
     restart: unless-stopped
     depends_on:
       gluetun:
@@ -125,6 +139,7 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    logging: *default-logging
     restart: unless-stopped
     depends_on:
       gluetun:

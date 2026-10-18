@@ -5,7 +5,7 @@
 # even when a container is created and then immediately dies.
 set -e
 
-# Load environment variables if .env exists
+# Load environment variables if .env exists (local development)
 if [ -f .env ]; then
   source .env
 fi
@@ -36,4 +36,28 @@ docker compose down --remove-orphans
 echo "Starting containers..."
 docker compose up -d
 
-echo "Deployment complete."
+echo "Waiting for Gluetun VPN to report healthy status..."
+MAX_WAIT=45
+COUNT=0
+while [ "$COUNT" -lt "$MAX_WAIT" ]; do
+    HEALTH_STATUS=$(docker inspect --format '{{.State.Health.Status}}' gluetun 2>/dev/null || echo "unknown")
+    if [ "$HEALTH_STATUS" = "healthy" ]; then
+        echo "Gluetun is healthy."
+        break
+    fi
+    if [ "$HEALTH_STATUS" = "unhealthy" ]; then
+        echo "Error: Gluetun reported unhealthy status! Dumping recent logs:"
+        docker logs gluetun --tail 50 || true
+        exit 1
+    fi
+    sleep 2
+    COUNT=$((COUNT + 1))
+done
+
+if [ "$COUNT" -ge "$MAX_WAIT" ]; then
+    echo "Error: Timed out waiting for Gluetun to report healthy status."
+    docker logs gluetun --tail 50 || true
+    exit 1
+fi
+
+echo "Deployment complete and verified."

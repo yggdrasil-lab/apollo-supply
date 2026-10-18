@@ -17,13 +17,22 @@ Full stack documentation lives in the vault: `Areas/90-Infrastructure/Apollo/Apo
 
 Includes VPN setup steps, port forwarding, troubleshooting (Gluetun connection loops, metadata stalls, SABnzbd hostname verification), systemd persistence, and the historical timeline of the supply layer.
 
+## Host Provisioning
+
+Host directories (`/opt/apollo-supply/*`, `/mnt/storage/downloads/slskd/*`), the boot persistence service (`apollo-supply.service`), and the graceful restart tool (`muspelheim-restart-docker.sh`) are centrally managed by [yggdrasil-os](https://github.com/yggdrasil-lab/yggdrasil-os):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yggdrasil-lab/yggdrasil-os/main/hosts/setup_muspelheim.sh | sudo bash
+```
+
 ## Deploy
 
 ```bash
 ./start.sh
 ```
 
-Requires: muspelheim host, `aether-net` overlay network, VPN secrets in environment/GitHub Secrets, systemd service for boot persistence.
+Triggered automatically via GitHub Actions on push to `main` with VPN credentials and environment variables injected from GitHub Secrets. Deploys directly on Muspelheim using standalone Docker Compose, installs `config/slskd.yml` onto the host, and verifies Gluetun VPN health before reporting success.
+
 
 ### Inbound ports
 

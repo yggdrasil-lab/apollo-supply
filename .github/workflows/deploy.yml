@@ -13,20 +13,53 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy
+      - name: Validate Required Configuration
         env:
-          VPN_SERVICE_PROVIDER: ${{ secrets.VPN_SERVICE_PROVIDER }}
-          VPN_USER: ${{ secrets.VPN_USER }}
-          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
-          VPN_TYPE: ${{ secrets.VPN_TYPE }}
+          VPN_SERVICE_PROVIDER: ${{ vars.VPN_SERVICE_PROVIDER }}
+          VPN_TYPE: ${{ vars.VPN_TYPE }}
           WIREGUARD_PRIVATE_KEY: ${{ secrets.WIREGUARD_PRIVATE_KEY }}
           WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
-          WIREGUARD_ADDRESSES: ${{ secrets.WIREGUARD_ADDRESSES }}
-          FIREWALL_VPN_INPUT_PORTS: ${{ secrets.FIREWALL_VPN_INPUT_PORTS }}
-          SLSKD_LISTEN_PORT: ${{ secrets.SLSKD_LISTEN_PORT }}
+          WIREGUARD_ADDRESSES: ${{ vars.WIREGUARD_ADDRESSES }}
+          FIREWALL_VPN_INPUT_PORTS: ${{ vars.FIREWALL_VPN_INPUT_PORTS }}
+          SLSKD_LISTEN_PORT: ${{ vars.SLSKD_LISTEN_PORT }}
           GLUETUN_CONTROL_API_KEY: ${{ secrets.GLUETUN_CONTROL_API_KEY }}
-          SLSKD_USERNAME: ${{ secrets.SLSKD_USERNAME }}
+          SLSKD_USERNAME: ${{ vars.SLSKD_USERNAME }}
           SLSKD_PASSWORD: ${{ secrets.SLSKD_PASSWORD }}
-          SLSKD_SLSK_USERNAME: ${{ secrets.SLSKD_SLSK_USERNAME }}
+          SLSKD_SLSK_USERNAME: ${{ vars.SLSKD_SLSK_USERNAME }}
+          SLSKD_SLSK_PASSWORD: ${{ secrets.SLSKD_SLSK_PASSWORD }}
+        run: |
+          MISSING=""
+          [ -z "$VPN_SERVICE_PROVIDER" ] && MISSING="$MISSING VPN_SERVICE_PROVIDER"
+          [ -z "$VPN_TYPE" ] && MISSING="$MISSING VPN_TYPE"
+          [ -z "$WIREGUARD_PRIVATE_KEY" ] && MISSING="$MISSING WIREGUARD_PRIVATE_KEY"
+          [ -z "$WIREGUARD_PRESHARED_KEY" ] && MISSING="$MISSING WIREGUARD_PRESHARED_KEY"
+          [ -z "$WIREGUARD_ADDRESSES" ] && MISSING="$MISSING WIREGUARD_ADDRESSES"
+          [ -z "$FIREWALL_VPN_INPUT_PORTS" ] && MISSING="$MISSING FIREWALL_VPN_INPUT_PORTS"
+          [ -z "$SLSKD_LISTEN_PORT" ] && MISSING="$MISSING SLSKD_LISTEN_PORT"
+          [ -z "$GLUETUN_CONTROL_API_KEY" ] && MISSING="$MISSING GLUETUN_CONTROL_API_KEY"
+          [ -z "$SLSKD_USERNAME" ] && MISSING="$MISSING SLSKD_USERNAME"
+          [ -z "$SLSKD_PASSWORD" ] && MISSING="$MISSING SLSKD_PASSWORD"
+          [ -z "$SLSKD_SLSK_USERNAME" ] && MISSING="$MISSING SLSKD_SLSK_USERNAME"
+          [ -z "$SLSKD_SLSK_PASSWORD" ] && MISSING="$MISSING SLSKD_SLSK_PASSWORD"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Deployment halted: missing required configuration:$MISSING" >&2
+            exit 1
+          fi
+
+      - name: Deploy
+        env:
+          VPN_SERVICE_PROVIDER: ${{ vars.VPN_SERVICE_PROVIDER }}
+          VPN_USER: ${{ vars.VPN_USER }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+          VPN_TYPE: ${{ vars.VPN_TYPE }}
+          WIREGUARD_PRIVATE_KEY: ${{ secrets.WIREGUARD_PRIVATE_KEY }}
+          WIREGUARD_PRESHARED_KEY: ${{ secrets.WIREGUARD_PRESHARED_KEY }}
+          WIREGUARD_ADDRESSES: ${{ vars.WIREGUARD_ADDRESSES }}
+          FIREWALL_VPN_INPUT_PORTS: ${{ vars.FIREWALL_VPN_INPUT_PORTS }}
+          SLSKD_LISTEN_PORT: ${{ vars.SLSKD_LISTEN_PORT }}
+          GLUETUN_CONTROL_API_KEY: ${{ secrets.GLUETUN_CONTROL_API_KEY }}
+          SLSKD_USERNAME: ${{ vars.SLSKD_USERNAME }}
+          SLSKD_PASSWORD: ${{ secrets.SLSKD_PASSWORD }}
+          SLSKD_SLSK_USERNAME: ${{ vars.SLSKD_SLSK_USERNAME }}
           SLSKD_SLSK_PASSWORD: ${{ secrets.SLSKD_SLSK_PASSWORD }}
         run: ./start.sh

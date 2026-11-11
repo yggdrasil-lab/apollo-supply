@@ -50,6 +50,12 @@ services:
           - slskd
     labels:
       - "com.docker.compose.project=apollo-supply"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
     logging: *default-logging
     restart: unless-stopped
 
@@ -67,6 +73,18 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     logging: *default-logging
     restart: unless-stopped
     depends_on:
@@ -86,6 +104,18 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8085/api?mode=version || curl -f http://localhost:8085/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     logging: *default-logging
     restart: unless-stopped
     depends_on:
@@ -139,6 +169,18 @@ services:
       - /mnt/storage/downloads:/downloads
     labels:
       - "com.docker.compose.project=apollo-supply"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:5030/health > /dev/null 2>&1 || curl -f http://localhost:5030/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     logging: *default-logging
     restart: unless-stopped
     depends_on:
